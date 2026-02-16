@@ -1,0 +1,10 @@
+name: category_recs_app_v2
+title:
+username: loyaltylabs
+account: loyaltylabs
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 16155810
+bundleId: 11237671
+url: https://loyaltylabs.shinyapps.io/category_recs_app_v2/
+version: 1
