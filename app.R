@@ -410,7 +410,7 @@ server <- function(input, output, session) {
   }
   
   
-  correct_password <- "X@4!Q8$R7M2ZP"  # 🔐
+  correct_password <- Sys.getenv("APP_PASS")
   
   observeEvent(input$login, {
     if (input$password == correct_password) {
