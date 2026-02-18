@@ -20,11 +20,9 @@ library(htmltools)
 # ---- UI ----
 ui <- fluidPage(
   useShinyjs(),
-  
-  
-  
   theme = shinytheme("flatly"),
   tags$head(
+    includeHTML("google-analytics.html"),
     tags$style(HTML("
       /* ===== ОСНОВНА ПАЛІТРА ===== */
       :root {
