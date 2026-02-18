@@ -127,181 +127,224 @@ ui <- fluidPage(
   hidden(
     div(
       id = "app_panel",
-  
-  titlePanel("Рекомендації категорій"),
-  
-  sidebarLayout(
-    sidebarPanel(
-      # >>> NEW: Value proposition + демо
-      div(class = "well-custom",
-          div(class = "hero-title", "Поради для CRM та крос-сейлу за категоріями"),
-          div(class = "hero-sub",
-              "Швидко перетворює історію покупок у готові рекомендації для комунікацій (email/SMS/push) та сегментів."
-          ),
-          tags$ul(class = "hero-bullets",
-                  tags$li("Готовий список рекомендацій по клієнтах"),
-                  tags$li("Оцінка покриття та ТОП категорій"),
-                  tags$li("Експорт у Excel для CRM")
-          )
-      ),
       
-      # 1. Дані
-      div(class = "well-custom",
-          h4(tags$span(class="step-badge","Крок 1"), "Дані"),
-          fileInput(
-            "file",
-            "Завантажте файл (xlsx/csv)",
-            accept = c(".xlsx", ".xls", ".csv")
-          ),
-          # >>> NEW: шаблон
-          downloadButton("download_template", "Скачати шаблон файлу", class = "btn btn-default btn-block"),
-          br(),
-          uiOutput("file_check_ui"),
-          helpText(
-            "Очікувані колонки у файлі:",
-            tags$br(),
-            tags$b("client_id"), " – ID клієнта;",
-            tags$br(),
-            tags$b("Категорія 2 рівня"), " – назва категорії."
-          )
-      ),
+      titlePanel("Рекомендації категорій"),
       
-      # 2. Параметри
-      div(class = "well-custom",
-          h4(tags$span(class="step-badge","Крок 2"), "Налаштування"),
-          numericInput("max_cats", "Скільки категорій беремо у модель (TOП найпопулярніших категорій)", value = 100, min = 10),
-          br(), br(),
-          numericInput("max_users", "Скільки клієнтів аналізуємо", value = 1000, min = 100),
-          br(), br(),
-          numericInput("top_n", "Скільки категорій рекомендувати кожному клієнту (максимальна кількість рекомендованих категорій)", value = 5, min = 1),
-          br(), br(),
-          actionButton("use_recommended", "Рекомендовані налаштування", class = "btn btn-default btn-block"),
-          br(),
-          actionButton("run", "Запустити модель", class = "btn btn-primary btn-block"),
-          br(),
+      sidebarLayout(
+        sidebarPanel(
+          # >>> NEW: Value proposition + демо
+          div(class = "well-custom",
+              div(class = "hero-title", "Поради для CRM та крос-сейлу за категоріями"),
+              div(class = "hero-sub",
+                  "Швидко перетворює історію покупок у готові рекомендації для комунікацій (email/SMS/push) та сегментів."
+              ),
+              tags$ul(class = "hero-bullets",
+                      tags$li("Готовий список рекомендацій по клієнтах"),
+                      tags$li("Оцінка покриття та ТОП категорій"),
+                      tags$li("Експорт у Excel для CRM")
+              )
+          ),
           
-          div(
-            id = "calc_status",
-            style = "display:none; text-align:center; margin-top:10px;",
-            tags$div(
-              tags$strong("Йде розрахунок…"),
+          # 1. Дані
+          div(class = "well-custom",
+              h4(tags$span(class="step-badge","Крок 1"), "Дані"),
+              fileInput(
+                "file",
+                "Завантажте файл (xlsx/csv)",
+                accept = c(".xlsx", ".xls", ".csv")
+              ),
+              # >>> NEW: шаблон
+              downloadButton("download_template", "Скачати шаблон файлу", class = "btn btn-default btn-block"),
               br(),
-              tags$small("Будь ласка, зачекайте. Це може зайняти декілька хвилин в залежності від вибраної кількості клієнтів.")
-            )
-          )
+              uiOutput("file_check_ui"),
+              helpText(
+                "Очікувані колонки у файлі:",
+                tags$br(),
+                tags$b("client_id"), " – ID клієнта;",
+                tags$br(),
+                tags$b("Категорія 2 рівня"), " – назва категорії."
+              )
+          ),
           
-      ),
-      
-      # 3. Експорт
-      div(class = "well-custom",
-          h4(tags$span(class="step-badge","Крок 3"), "Експорт результатів"),
-          tags$small("Доступні після запуску моделі"),
-          br(), br(),
-          downloadButton("download_rank", "Рангові рекомендації (rank_matrix.xlsx)", class = "btn btn-success download-btn"),
-          downloadButton("download_purchase", "Матриця 0/1 (client_category_matrix.xlsx)", class = "btn btn-default download-btn"),
-          downloadButton("download_rec_list", "Список рекомендацій (recommendations_list.xlsx)", class = "btn btn-default download-btn"),
-          downloadButton("download_combined", "Покупки 0/1 + рекомендації (combined.xlsx)", class = "btn btn-success download-btn")
-      ),
-      width = 4
-    ),
-    
-    mainPanel(
-      tabsetPanel(
-        tabPanel(
-          "Огляд результатів",
-          br(),
-          # >>> NEW: KPI cards
+          # 2. Параметри
           div(class = "well-custom",
-              h4("Результат запуску — коротко"),
-              uiOutput("kpi_cards")
-          ),
-          div(class = "well-custom",
-              h4("ТОП рекомендованих категорій"),
-              tableOutput("top_categories_all")
-          ),
-          div(class = "well-custom",
-              h4("Перегляд по клієнту: покупки vs рекомендації"),
-              uiOutput("client_picker_ui"),
+              h4(tags$span(class="step-badge","Крок 2"), "Налаштування"),
+              numericInput("max_cats", "Скільки категорій беремо у модель (TOП найпопулярніших категорій)", value = 100, min = 10),
+              br(), br(),
+              numericInput("max_users", "Скільки клієнтів аналізуємо", value = 1000, min = 100),
+              br(), br(),
+              numericInput("top_n", "Скільки категорій рекомендувати кожному клієнту (максимальна кількість рекомендованих категорій)", value = 5, min = 1),
+              br(), br(),
+              actionButton("use_recommended", "Рекомендовані налаштування", class = "btn btn-default btn-block"),
               br(),
-              tableOutput("client_view")
-          )
+              actionButton("run", "Запустити модель", class = "btn btn-primary btn-block"),
+              br(),
+              
+              div(
+                id = "calc_status",
+                style = "display:none; text-align:center; margin-top:10px;",
+                tags$div(
+                  tags$strong("Йде розрахунок…"),
+                  br(),
+                  tags$small("Будь ласка, зачекайте. Це може зайняти декілька хвилин в залежності від вибраної кількості клієнтів.")
+                )
+              )
+              
+          ),
+          
+          # 3. Експорт
+          div(class = "well-custom",
+              h4(tags$span(class="step-badge","Крок 3"), "Експорт результатів"),
+              tags$small("Доступні після запуску моделі"),
+              br(), br(),
+              downloadButton("download_rank", "Рангові рекомендації (rank_matrix.xlsx)", class = "btn btn-success download-btn"),
+              downloadButton("download_purchase", "Матриця 0/1 (client_category_matrix.xlsx)", class = "btn btn-default download-btn"),
+              downloadButton("download_rec_list", "Список рекомендацій (recommendations_list.xlsx)", class = "btn btn-default download-btn"),
+              downloadButton("download_combined", "Покупки 0/1 + рекомендації (combined.xlsx)", class = "btn btn-success download-btn"),
+              downloadButton("download_profiles", "Профіль клієнтів (clients_profile.xlsx)", class = "btn btn-default download-btn"),
+              downloadButton("download_penetration", "Охоплення категорій (category_penetration.xlsx)", class = "btn btn-default download-btn")
+              # downloadButton("download_mono", "Mono-клієнти (mono_clients.xlsx)", class = "btn btn-default download-btn")
+              
+          ),
+          width = 4
         ),
         
-        tabPanel(
-          "Таблиця рекомендацій",
-          br(),
-          
-          # ✅ НОВИЙ БЛОК ФІЛЬТРА
-          div(class = "well-custom",
-              h4("Фільтр: клієнт купував обрані категорії (buy_*)"),
-              fluidRow(
-                column(
-                  8,
-                  selectizeInput(
-                    "buy_multi_filter",
-                    "Оберіть категорії (можна кілька)",
-                    choices = NULL,
-                    multiple = TRUE,
-                    options = list(
-                      placeholder = "Почніть вводити назву категорії…",
-                      plugins = list("remove_button")
+        mainPanel(
+          tabsetPanel(
+            tabPanel(
+              "Огляд результатів",
+              br(),
+              # >>> NEW: KPI cards
+              div(class = "well-custom",
+                  h4("Результат запуску — коротко"),
+                  uiOutput("kpi_cards")
+              ),
+              div(class = "well-custom",
+                  h4("ТОП рекомендованих категорій"),
+                  tableOutput("top_categories_all")
+              ),
+              div(class = "well-custom",
+                  h4("Перегляд по клієнту: покупки vs рекомендації"),
+                  uiOutput("client_picker_ui"),
+                  br(),
+                  tableOutput("client_view")
+              )
+            ),
+            
+            tabPanel(
+              "Таблиця рекомендацій",
+              br(),
+              
+              # ✅ НОВИЙ БЛОК ФІЛЬТРА
+              div(class = "well-custom",
+                  h4("Фільтр: клієнт купував обрані категорії (buy_*)"),
+                  fluidRow(
+                    column(
+                      8,
+                      selectizeInput(
+                        "buy_multi_filter",
+                        "Оберіть категорії (можна кілька)",
+                        choices = NULL,
+                        multiple = TRUE,
+                        options = list(
+                          placeholder = "Почніть вводити назву категорії…",
+                          plugins = list("remove_button")
+                        )
+                      )
+                    ),
+                    column(
+                      4,
+                      radioButtons(
+                        "buy_multi_mode",
+                        "Умова",
+                        choices = c("Усі обрані (AND)" = "AND", "Будь-яка з обраних (OR)" = "OR"),
+                        inline = TRUE,
+                        selected = "AND"
+                      )
                     )
-                  )
-                ),
-                column(
-                  4,
-                  radioButtons(
-                    "buy_multi_mode",
-                    "Умова",
-                    choices = c("Усі обрані (AND)" = "AND", "Будь-яка з обраних (OR)" = "OR"),
-                    inline = TRUE,
-                    selected = "AND"
-                  )
-                )
+                  ),
+                  tags$small("Порада: оберіть 2–4 категорії, щоб знайти “перетини” для сегмента/кампанії.")
+              )
+              ,
+              
+              # ✅ ТАБЛИЦЯ
+              div(class = "well-custom",
+                  h4("Покупки 0/1 + рекомендації — перегляд у додатку"),
+                  tags$small("Зручно фільтрувати клієнтів за наявністю покупки конкретної категорії."),
+                  br(), br(),
+                  DTOutput("combined_table")
               ),
-              tags$small("Порада: оберіть 2–4 категорії, щоб знайти “перетини” для сегмента/кампанії.")
-          )
-          ,
-          
-          # ✅ ТАБЛИЦЯ
-          div(class = "well-custom",
-              h4("Покупки 0/1 + рекомендації — перегляд у додатку"),
-              tags$small("Зручно фільтрувати клієнтів за наявністю покупки конкретної категорії."),
-              br(), br(),
-              DTOutput("combined_table")
-          ),
-          
-          # (залишаємо summary — воно корисне)
-          div(class = "well-custom",
-              h4("Коротка інформація про запуск"),
-              verbatimTextOutput("summary")
+              
+              # (залишаємо summary — воно корисне)
+              div(class = "well-custom",
+                  h4("Коротка інформація про запуск"),
+                  verbatimTextOutput("summary")
+              )
+            )
+            
+            ,
+            
+            tabPanel(
+              "Профіль клієнтів",
+              br(),
+              div(class="well-custom",
+                  h4("KPI профілю клієнтів"),
+                  uiOutput("kpi_profile_cards")
+              ),
+              div(class="well-custom",
+                  h4("Розподіл кількості куплених категорій на клієнта"),
+                  plotOutput("breadth_hist", height = 260)
+              ),
+              div(class="well-custom",
+                  h4("Розподіл клієнтів за широтою кошика"),
+                  plotOutput("breadth_groups_bar", height = 320)
+                  
+              ),
+              div(class="well-custom",
+                  h4("Таблиця профілю клієнтів"),
+                  DTOutput("client_profile_table") %>% withSpinner()
+              )
+            ),
+            
+            tabPanel(
+              "Охоплення категорій",
+              br(),
+              div(class="well-custom",
+                  h4("ТОП-20 категорій за рівнем проникнення"),
+                  tags$small("Рівень проникнення = % клієнтів, які купували категорію"),
+                  br(), br(),
+                  plotOutput("pen_bar", height = 320)
+              ),
+              div(class="well-custom",
+                  h4("Таблиця охоплення"),
+                  DTOutput("penetration_table") %>% withSpinner()
+              ),
+              
+              
+            ),
+            
+            
+            tabPanel(
+              "Про додаток",
+              br(),
+              div(class = "well-custom",
+                  h3("Як працює інструмент рекомендацій"),
+                  p("Додаток аналізує покупки клієнтів і пропонує категорії, які можуть бути релевантними."),
+                  tags$ul(
+                    tags$li("Файл перетворюється у матрицю клієнт × категорія (0/1)."),
+                    tags$li("Беруться TOP-категорії за популярністю."),
+                    tags$li("Будується модель UBCF з мірою Jaccard."),
+                    tags$li("Формуються рекомендації для test-вибірки."),
+                    tags$li("Доступні 4 файли експорту, включно з комбінованою таблицею.")
+                  ),
+                  tags$small("Ваші дані не зберігаються та використовуються лише для розрахунку.")
+              )
+            )
           )
         )
-        
-        ,
-        
-        tabPanel(
-          "Про додаток",
-          br(),
-          div(class = "well-custom",
-              h3("Як працює інструмент рекомендацій"),
-              p("Додаток аналізує покупки клієнтів і пропонує категорії, які можуть бути релевантними."),
-              tags$ul(
-                tags$li("Файл перетворюється у матрицю клієнт × категорія (0/1)."),
-                tags$li("Беруться TOP-категорії за популярністю."),
-                tags$li("Будується модель UBCF з мірою Jaccard."),
-                tags$li("Формуються рекомендації для test-вибірки."),
-                tags$li("Доступні 4 файли експорту, включно з комбінованою таблицею.")
-              ),
-              tags$small("Ваші дані не зберігаються та використовуються лише для розрахунку.")
-          )
-        )
-      ),
-      width = 8
+      )
     )
   )
-)
-)
 )
 
 # ---- SERVER ----
@@ -322,7 +365,15 @@ server <- function(input, output, session) {
     # >>> NEW: dataset + per-client view
     df_raw = NULL,
     interactions = NULL,
-    client_options = NULL
+    client_options = NULL,
+    bad_rows = 0,
+    bad_clients = 0,
+    
+    # >>> NEW: stage-1 analytics exports
+    client_profile = NULL,
+    penetration_tbl = NULL,
+    mono_clients = NULL
+    
   )
   
   # --- QUALITY HELPERS (holdout evaluation) ---
@@ -486,6 +537,25 @@ server <- function(input, output, session) {
       showNotification("Непідтримуваний формат файлу", type = "error")
       return(NULL)
     }
+    
+    # ---- Data quality check: empty categories ----
+    if ("Категорія 2 рівня" %in% names(df)) {
+      cat_raw <- as.character(df$`Категорія 2 рівня`)
+      bad_mask <- is.na(cat_raw) | trimws(cat_raw) == ""
+      rv$bad_rows <- sum(bad_mask)
+      
+      # скільки унікальних клієнтів мають хоч один "поганий" рядок
+      if ("client_id" %in% names(df)) {
+        rv$bad_clients <- dplyr::n_distinct(df$client_id[bad_mask])
+      } else {
+        rv$bad_clients <- 0
+      }
+    } else {
+      rv$bad_rows <- 0
+      rv$bad_clients <- 0
+    }
+    
+    
     rv$df_raw <- df
   })
   
@@ -527,7 +597,7 @@ server <- function(input, output, session) {
     withProgress(message = "Виконується розрахунок рекомендацій", value = 0, {
       
       incProgress(0.1, detail = "Перевірка та підготовка даних")
-    
+      
       # =========================
       # RULES / POLICY (MUST BE BEFORE predict/map2)
       # =========================
@@ -599,127 +669,402 @@ server <- function(input, output, session) {
         recs
       }
       
-    # >>> NEW: use either uploaded or demo data
-    df <- rv$df_raw
-    if (is.null(df)) {
-      showNotification("Завантажте файл.", type = "error")
-      return(NULL)
-    }
-    
-    # ---- 1a. Перевірка колонок ----
-    needed_cols <- c("client_id", "Категорія 2 рівня")
-    missing <- setdiff(needed_cols, colnames(df))
-    if (length(missing) > 0) {
-      showNotification(
-        paste0("У файлі не вистачає колонок: ", paste(missing, collapse = ", ")),
-        type = "error"
+      # >>> NEW: use either uploaded or demo data
+      df <- rv$df_raw
+      if (is.null(df)) {
+        showNotification("Завантажте файл.", type = "error")
+        return(NULL)
+      }
+      
+      # ---- 1a. Перевірка колонок ----
+      needed_cols <- c("client_id", "Категорія 2 рівня")
+      missing <- setdiff(needed_cols, colnames(df))
+      if (length(missing) > 0) {
+        showNotification(
+          paste0("У файлі не вистачає колонок: ", paste(missing, collapse = ", ")),
+          type = "error"
+        )
+        return(NULL)
+      }
+      
+      # Приводимо до стандартних назв
+      # Приводимо до стандартної назви + чистимо текст категорій
+      df <- df %>%
+        mutate(
+          category_lv2 = as.character(`Категорія 2 рівня`),
+          category_lv2 = trimws(category_lv2),
+          category_lv2 = gsub("\\s+", " ", category_lv2),
+          category_lv2 = na_if(category_lv2, "")
+        ) %>%
+        filter(!is.na(category_lv2))
+      
+      
+      # ---- 2. Взаємодії клієнт–категорія (0/1) ----
+      # ---- 2. Взаємодії клієнт–категорія (0/1) ----
+      interactions <- df %>%
+        select(client_id, category_lv2) %>%
+        distinct() %>%
+        mutate(value = 1)
+      
+      rv$interactions <- interactions
+      
+      # === ВСТАВИТИ ОСЬ ТУТ (mono з сирих interactions) ===
+      client_cat_counts_all <- interactions %>%
+        count(client_id, name = "n_cat")
+      
+      n_clients_all <- dplyr::n_distinct(interactions$client_id)
+      
+      n_mono_clients_all <- client_cat_counts_all %>%
+        filter(n_cat == 1) %>%
+        nrow()
+      
+      share_mono_all <- round(100 * n_mono_clients_all / n_clients_all, 1)
+      
+      rv$share_mono_all <- share_mono_all
+      
+      rv$mono_clients <- interactions %>%
+        inner_join(client_cat_counts_all, by = "client_id") %>%
+        filter(n_cat == 1) %>%
+        distinct(client_id, category_lv2) %>%
+        rename(mono_category = category_lv2) %>%
+        arrange(client_id)
+      
+      
+      # ---- 3. Обмеження категорій до TOP-k ----
+      cat_counts <- interactions %>%
+        count(category_lv2, name = "n_clients") %>%
+        arrange(desc(n_clients))
+      
+      
+      
+      
+      max_cats <- input$max_cats
+      if (nrow(cat_counts) > max_cats) {
+        keep_cats <- cat_counts$category_lv2[1:max_cats]
+        interactions <- interactions %>% filter(category_lv2 %in% keep_cats)
+      }
+      
+      # ---- 4. Матриця клієнт × категорія (0/1) ----
+      user_cat_matrix <- interactions %>%
+        pivot_wider(names_from = category_lv2, values_from = value, values_fill = list(value = 0))
+      
+      client_ids <- user_cat_matrix$client_id
+      purchase_matrix <- user_cat_matrix %>% select(-client_id) %>% as.matrix()
+      
+      
+      
+      # мінімум 2 покупки
+      min_items_per_user <- 2
+      keep_users <- rowSums(purchase_matrix > 0) >= min_items_per_user
+      
+      purchase_matrix <- purchase_matrix[keep_users, , drop = FALSE]
+      client_ids <- client_ids[keep_users]          # <-- ОЦЕ ДОДАТИ
+      
+      # прибрати рідкі категорії
+      min_users_per_item <- 5
+      keep_items <- colSums(purchase_matrix > 0) >= min_users_per_item
+      purchase_matrix <- purchase_matrix[, keep_items, drop = FALSE]
+      
+      rownames(purchase_matrix) <- client_ids       # тепер довжини співпадають
+      
+      
+      # Обмеження по кількості клієнтів
+      max_users <- input$max_users
+      if (nrow(purchase_matrix) > max_users) {
+        set.seed(123)
+        idx <- sample(seq_len(nrow(purchase_matrix)), max_users)
+        purchase_matrix <- purchase_matrix[idx, , drop = FALSE]
+        client_ids <- client_ids[idx]                 # ✅ додали
+        rownames(purchase_matrix) <- client_ids       # ✅ оновили
+      }
+      
+      # =========================
+      # STAGE 1: Client profile + penetration
+      # =========================
+      n_cat_total <- ncol(purchase_matrix)
+      
+      breadth <- rowSums(purchase_matrix > 0)
+      
+      breadth_group <- dplyr::case_when(
+        breadth == 1 ~ "Mono (1)",
+        breadth %in% 2:4 ~ "2–4",
+        breadth %in% 5:9 ~ "5–9",
+        breadth >= 10 ~ "10+",
+        TRUE ~ "Zero (0)"
       )
-      return(NULL)
-    }
-    
-    # Приводимо до стандартних назв
-    # Приводимо до стандартної назви + чистимо текст категорій
-    df <- df %>%
-      mutate(
-        category_lv2 = `Категорія 2 рівня`,
-        category_lv2 = trimws(category_lv2),
-        category_lv2 = gsub("\\s+", " ", category_lv2)
+      
+      div_index <- if (n_cat_total > 0) breadth / n_cat_total else NA_real_
+      
+      # mono category (для mono клієнтів)
+      
+      
+      client_profile <- data.frame(
+        client_id = rownames(purchase_matrix),
+        breadth = as.numeric(breadth),
+        breadth_group = breadth_group,
+        div_index = round(as.numeric(div_index), 4),
+        stringsAsFactors = FALSE
       )
-    
-    # ---- 2. Взаємодії клієнт–категорія (0/1) ----
-    interactions <- df %>%
-      select(client_id, category_lv2) %>%
-      distinct() %>%
-      mutate(value = 1)
-    
-    
-    rv$interactions <- interactions
-    
-    # ---- 3. Обмеження категорій до TOP-k ----
-    cat_counts <- interactions %>%
-      count(category_lv2, name = "n_clients") %>%
-      arrange(desc(n_clients))
-    
-    max_cats <- input$max_cats
-    if (nrow(cat_counts) > max_cats) {
-      keep_cats <- cat_counts$category_lv2[1:max_cats]
-      interactions <- interactions %>% filter(category_lv2 %in% keep_cats)
-    }
-    
-    # ---- 4. Матриця клієнт × категорія (0/1) ----
-    user_cat_matrix <- interactions %>%
-      pivot_wider(names_from = category_lv2, values_from = value, values_fill = list(value = 0))
-    
-    client_ids <- user_cat_matrix$client_id
-    purchase_matrix <- user_cat_matrix %>% select(-client_id) %>% as.matrix()
-    
-    # мінімум 2 покупки
-    min_items_per_user <- 2
-    keep_users <- rowSums(purchase_matrix > 0) >= min_items_per_user
-    
-    purchase_matrix <- purchase_matrix[keep_users, , drop = FALSE]
-    client_ids <- client_ids[keep_users]          # <-- ОЦЕ ДОДАТИ
-    
-    # прибрати рідкі категорії
-    min_users_per_item <- 5
-    keep_items <- colSums(purchase_matrix > 0) >= min_users_per_item
-    purchase_matrix <- purchase_matrix[, keep_items, drop = FALSE]
-    
-    rownames(purchase_matrix) <- client_ids       # тепер довжини співпадають
-    
-    
-    # Обмеження по кількості клієнтів
-    max_users <- input$max_users
-    if (nrow(purchase_matrix) > max_users) {
+      rv$client_profile <- client_profile
+      
+      
+      
+      
+      
+      pen <- colMeans(purchase_matrix > 0)
+      
+      penetration_tbl <- tibble::tibble(
+        Категорія = names(pen),
+        `Рівень проникнення` = round(as.numeric(pen), 2),
+        `Охоплення клієнтів, %` = round(100 * as.numeric(pen), 2),
+        `К-сть клієнтів` = as.integer(colSums(purchase_matrix > 0))
+      ) %>%
+        dplyr::arrange(dplyr::desc(`Рівень проникнення`))
+      
+      
+      
+      # зберігаємо в rv
+      rv$client_profile <- client_profile
+      rv$penetration_tbl <- penetration_tbl
+      
+      
+      
+      storage.mode(purchase_matrix) <- "numeric"
+      bin_mat <- as(purchase_matrix, "binaryRatingMatrix")
+      
+      # ---- 5. Train/Test split ----
       set.seed(123)
-      idx <- sample(seq_len(nrow(purchase_matrix)), max_users)
-      purchase_matrix <- purchase_matrix[idx, , drop = FALSE]
-    }
-    
-    
-    storage.mode(purchase_matrix) <- "numeric"
-    bin_mat <- as(purchase_matrix, "binaryRatingMatrix")
-    
-    # ---- 5. Train/Test split ----
-    set.seed(123)
-    n_users <- nrow(bin_mat)
-    if (n_users < 5) {
-      showNotification("Занадто мало клієнтів для побудови моделі.", type = "error")
-      return(NULL)
-    }
-    
-    train_id <- sample(seq_len(n_users), size = round(0.8 * n_users))
-    train <- bin_mat[train_id, ]
-    test  <- bin_mat[-train_id, ]
-    
-    # ---- 6. UBCF модель (Jaccard) ----
-    # 1. Залишаємо модель для оцінки якості (на 80% даних)
-    rec_val <- Recommender(train, "UBCF", parameter = list(method = "Jaccard", nn = 50))
-    
-    # 2. Створюємо фінальну модель для бізнесу (на 100% даних)
-    # Саме вона дасть найкращі поради, бо знає історію кожного клієнта
-    rec_final <- Recommender(bin_mat, "UBCF", parameter = list(method = "Jaccard", nn = 50))
-    
-    
-    
-    top_n <- input$top_n
-    
-    # ---- 6A. Рекомендації по TEST ----
-    pred_test <- predict(rec_val, newdata = test, n = top_n, type = "topNList")
-    rec_list_test <- as(pred_test, "list")
-    test_ids <- rownames(test)
-    
-    test_m <- as(test, "matrix")
-    
-    rec_list_test <- purrr::map2(
-      .x = rec_list_test,
-      .y = test_ids,
-      ~{
-        uid <- .y
-        bought_items <- colnames(test_m)[test_m[uid, ] > 0]
+      n_users <- nrow(bin_mat)
+      if (n_users < 5) {
+        showNotification("Занадто мало клієнтів для побудови моделі.", type = "error")
+        return(NULL)
+      }
+      
+      train_id <- sample(seq_len(n_users), size = round(0.8 * n_users))
+      train <- bin_mat[train_id, ]
+      test  <- bin_mat[-train_id, ]
+      
+      # ---- 6. UBCF модель (Jaccard) ----
+      # 1. Залишаємо модель для оцінки якості (на 80% даних)
+      rec_val <- Recommender(train, "UBCF", parameter = list(method = "Jaccard", nn = 50))
+      
+      # 2. Створюємо фінальну модель для бізнесу (на 100% даних)
+      # Саме вона дасть найкращі поради, бо знає історію кожного клієнта
+      rec_final <- Recommender(bin_mat, "UBCF", parameter = list(method = "Jaccard", nn = 50))
+      
+      
+      
+      top_n <- input$top_n
+      
+      # ---- 6A. Рекомендації по TEST ----
+      pred_test <- predict(rec_val, newdata = test, n = top_n, type = "topNList")
+      rec_list_test <- as(pred_test, "list")
+      test_ids <- rownames(test)
+      
+      test_m <- as(test, "matrix")
+      
+      rec_list_test <- purrr::map2(
+        .x = rec_list_test,
+        .y = test_ids,
+        ~{
+          uid <- .y
+          bought_items <- colnames(test_m)[test_m[uid, ] > 0]
+          
+          head(
+            apply_rules(
+              recs = .x,
+              bought_items = bought_items,
+              never_recommend = never_recommend,
+              tobacco_cat = tobacco_cat,
+              alcohol_cats = alcohol_cats,
+              kids_cat = kids_cat,
+              kids_signal = kids_signal,
+              policy = policy
+            ),
+            top_n
+          )
+        }
+      )
+      
+      
+      rec_long <- purrr::map2_df(
+        .x = rec_list_test,
+        .y = test_ids,
+        ~ tibble::tibble(client_id = .y, category = .x, rank = seq_along(.x))
+      )
+      
+      if (nrow(rec_long) == 0) {
+        showNotification("Модель не згенерувала жодної рекомендації. Перевірте дані.", type = "error")
+        return(NULL)
+      }
+      
+      rec_long <- rec_long %>% mutate(rank_score = top_n - rank + 1)
+      
+      # ---- 7. ОЦІНКА ЯКОСТІ (тільки в лог/консоль, без UI) ----
+      hold <- make_holdout_newdata(bin_mat, keep_frac = 0.7, seed = 123)
+      
+      
+      if (nrow(hold$given_mat) >= 10) {
         
-        head(
-          apply_rules(
+        # 7A) Predictions model (holdout newdata)
+        pred_hold <- predict(rec_val, newdata = hold$newdata, n = top_n, type = "topNList")
+        recs_list <- as(pred_hold, "list")
+        user_ids <- rownames(hold$newdata)
+        
+        # 7B) Popular baseline: топ популярних категорій з train
+        train_m <- as(train, "matrix")
+        pop_counts <- colSums(train_m > 0)
+        pop_items <- names(sort(pop_counts, decreasing = TRUE))
+        
+        make_pop_recs <- function(given_row, k) {
+          already <- names(given_row)[given_row > 0]
+          cand <- setdiff(pop_items, already)
+          head(cand, k)
+        }
+        
+        # 7C) Random baseline
+        all_items <- colnames(hold$given_mat)
+        make_rand_recs <- function(given_row, k) {
+          already <- names(given_row)[given_row > 0]
+          cand <- setdiff(all_items, already)
+          if (length(cand) == 0) return(character(0))
+          sample(cand, size = min(k, length(cand)))
+        }
+        
+        # 7D) Метрики по клієнтах
+        details <- purrr::map2_df(
+          .x = user_ids,
+          .y = seq_along(user_ids),
+          ~{
+            uid <- .x
+            i <- .y
+            
+            given_row <- hold$given_mat[i, ]
+            truth <- hold$truth[[uid]]
+            
+            rec_model <- recs_list[[i]]
+            rec_pop <- make_pop_recs(given_row, top_n)
+            rec_rand <- make_rand_recs(given_row, top_n)
+            
+            m1 <- calc_metrics_at_k(rec_model, truth, top_n)
+            m2 <- calc_metrics_at_k(rec_pop, truth, top_n)
+            m3 <- calc_metrics_at_k(rec_rand, truth, top_n)
+            
+            tibble::tibble(
+              client_id = uid,
+              truth_size = length(truth),
+              
+              model_precision = m1$precision,
+              model_recall    = m1$recall,
+              model_hit       = m1$hit,
+              model_map       = m1$ap,
+              model_ndcg      = m1$ndcg,
+              
+              pop_precision   = m2$precision,
+              pop_recall      = m2$recall,
+              pop_hit         = m2$hit,
+              pop_map         = m2$ap,
+              pop_ndcg        = m2$ndcg,
+              
+              rand_precision  = m3$precision,
+              rand_recall     = m3$recall,
+              rand_hit        = m3$hit,
+              rand_map        = m3$ap,
+              rand_ndcg       = m3$ndcg
+            )
+          }
+        )
+        
+        summary_tbl <- tibble::tibble(
+          Method = c("UBCF model", "Popular baseline", "Random baseline"),
+          `Precision@K` = c(mean(details$model_precision, na.rm = TRUE),
+                            mean(details$pop_precision,   na.rm = TRUE),
+                            mean(details$rand_precision,  na.rm = TRUE)),
+          `Recall@K`    = c(mean(details$model_recall, na.rm = TRUE),
+                            mean(details$pop_recall,   na.rm = TRUE),
+                            mean(details$rand_recall,  na.rm = TRUE)),
+          `HitRate@K`   = c(mean(details$model_hit, na.rm = TRUE),
+                            mean(details$pop_hit,   na.rm = TRUE),
+                            mean(details$rand_hit,  na.rm = TRUE)),
+          `MAP@K`       = c(mean(details$model_map, na.rm = TRUE),
+                            mean(details$pop_map,   na.rm = TRUE),
+                            mean(details$rand_map,  na.rm = TRUE)),
+          `nDCG@K`      = c(mean(details$model_ndcg, na.rm = TRUE),
+                            mean(details$pop_ndcg,   na.rm = TRUE),
+                            mean(details$rand_ndcg,  na.rm = TRUE))
+        ) %>%
+          dplyr::mutate(
+            `Precision@K` = round(`Precision@K`, 4),
+            `Recall@K`    = round(`Recall@K`, 4),
+            `HitRate@K`   = round(`HitRate@K`, 4),
+            `MAP@K`       = round(`MAP@K`, 4),
+            `nDCG@K`      = round(`nDCG@K`, 4)
+          )
+        
+        # Збережемо в rv (на всяк випадок)
+        rv$quality_summary <- summary_tbl
+        rv$quality_details <- details
+        
+        # Вивід тільки в консоль / логи
+        message("=== RECSYS QUALITY (Holdout on TEST) ===")
+        message("K = ", top_n, ", holdout keep_frac = 0.7")
+        print(summary_tbl)
+        message("---- details (first 20 rows) ----")
+        print(head(details, 20))
+        message("=== END RECSYS QUALITY ===")
+        
+      } else {
+        rv$quality_summary <- tibble::tibble(
+          Message = "Not enough test users with >=2 purchases for holdout evaluation."
+        )
+        rv$quality_details <- NULL
+        
+        message("=== RECSYS QUALITY ===")
+        message("Not enough test users with >=2 purchases for holdout evaluation.")
+        message("=== END RECSYS QUALITY ===")
+      }
+      
+      
+      # ---- ТОП категорій по TEST (зрозумілий рейтинг для клієнта) ----
+      n_test_clients <- rec_long %>% dplyr::summarise(n = dplyr::n_distinct(client_id)) %>% dplyr::pull(n)
+      
+      top_categories_test <- rec_long %>%
+        dplyr::filter(!is.na(category), category != "", category != "OTHER") %>%
+        dplyr::group_by(category) %>%
+        dplyr::summarise(
+          `Попит за рекомендаціями (індекс)` = sum(rank_score, na.rm = TRUE),
+          `К-сть клієнтів, кому рекомендовано` = dplyr::n_distinct(client_id),
+          `Середня сила рекомендації (1–N)` = round(mean(rank_score, na.rm = TRUE), 2),
+          .groups = "drop"
+        ) %>%
+        dplyr::mutate(`Охоплення, % клієнтів` = round(100 * `К-сть клієнтів, кому рекомендовано` / n_test_clients, 1)) %>%
+        dplyr::arrange(dplyr::desc(`Попит за рекомендаціями (індекс)`), dplyr::desc(`К-сть клієнтів, кому рекомендовано`)) %>%
+        dplyr::slice_head(n = 20)
+      
+      rv$top_categories_test <- top_categories_test
+      
+      
+      
+      
+      
+      # ---- 6B. Рекомендації по ВСІХ ----
+      # Використовуємо фінальну модель на повних даних
+      # ---- 6B. Рекомендації по ВСІХ ----
+      pred_all <- predict(rec_final, newdata = bin_mat, n = top_n, type = "topNList")
+      rec_list_all <- as(pred_all, "list")
+      all_ids <- rownames(bin_mat)
+      
+      # матриця покупок для визначення bought_items по кожному клієнту
+      bin_m <- as(bin_mat, "matrix")
+      
+      rec_list_all <- purrr::map2(
+        .x = rec_list_all,
+        .y = all_ids,
+        ~{
+          uid <- .y
+          bought_items <- colnames(bin_m)[bin_m[uid, ] > 0]
+          
+          out <- apply_rules(
             recs = .x,
             bought_items = bought_items,
             never_recommend = never_recommend,
@@ -728,284 +1073,94 @@ server <- function(input, output, session) {
             kids_cat = kids_cat,
             kids_signal = kids_signal,
             policy = policy
-          ),
-          top_n
-        )
-      }
-    )
-    
-    
-    rec_long <- purrr::map2_df(
-      .x = rec_list_test,
-      .y = test_ids,
-      ~ tibble::tibble(client_id = .y, category = .x, rank = seq_along(.x))
-    )
-    
-    if (nrow(rec_long) == 0) {
-      showNotification("Модель не згенерувала жодної рекомендації. Перевірте дані.", type = "error")
-      return(NULL)
-    }
-    
-    rec_long <- rec_long %>% mutate(rank_score = top_n - rank + 1)
-    
-    # ---- 7. ОЦІНКА ЯКОСТІ (тільки в лог/консоль, без UI) ----
-    hold <- make_holdout_newdata(bin_mat, keep_frac = 0.7, seed = 123)
-    
-    
-    if (nrow(hold$given_mat) >= 10) {
-      
-      # 7A) Predictions model (holdout newdata)
-      pred_hold <- predict(rec_val, newdata = hold$newdata, n = top_n, type = "topNList")
-      recs_list <- as(pred_hold, "list")
-      user_ids <- rownames(hold$newdata)
-      
-      # 7B) Popular baseline: топ популярних категорій з train
-      train_m <- as(train, "matrix")
-      pop_counts <- colSums(train_m > 0)
-      pop_items <- names(sort(pop_counts, decreasing = TRUE))
-      
-      make_pop_recs <- function(given_row, k) {
-        already <- names(given_row)[given_row > 0]
-        cand <- setdiff(pop_items, already)
-        head(cand, k)
-      }
-      
-      # 7C) Random baseline
-      all_items <- colnames(hold$given_mat)
-      make_rand_recs <- function(given_row, k) {
-        already <- names(given_row)[given_row > 0]
-        cand <- setdiff(all_items, already)
-        if (length(cand) == 0) return(character(0))
-        sample(cand, size = min(k, length(cand)))
-      }
-      
-      # 7D) Метрики по клієнтах
-      details <- purrr::map2_df(
-        .x = user_ids,
-        .y = seq_along(user_ids),
-        ~{
-          uid <- .x
-          i <- .y
-          
-          given_row <- hold$given_mat[i, ]
-          truth <- hold$truth[[uid]]
-          
-          rec_model <- recs_list[[i]]
-          rec_pop <- make_pop_recs(given_row, top_n)
-          rec_rand <- make_rand_recs(given_row, top_n)
-          
-          m1 <- calc_metrics_at_k(rec_model, truth, top_n)
-          m2 <- calc_metrics_at_k(rec_pop, truth, top_n)
-          m3 <- calc_metrics_at_k(rec_rand, truth, top_n)
-          
-          tibble::tibble(
-            client_id = uid,
-            truth_size = length(truth),
-            
-            model_precision = m1$precision,
-            model_recall    = m1$recall,
-            model_hit       = m1$hit,
-            model_map       = m1$ap,
-            model_ndcg      = m1$ndcg,
-            
-            pop_precision   = m2$precision,
-            pop_recall      = m2$recall,
-            pop_hit         = m2$hit,
-            pop_map         = m2$ap,
-            pop_ndcg        = m2$ndcg,
-            
-            rand_precision  = m3$precision,
-            rand_recall     = m3$recall,
-            rand_hit        = m3$hit,
-            rand_map        = m3$ap,
-            rand_ndcg       = m3$ndcg
           )
+          
+          head(out, top_n)
         }
       )
       
-      summary_tbl <- tibble::tibble(
-        Method = c("UBCF model", "Popular baseline", "Random baseline"),
-        `Precision@K` = c(mean(details$model_precision, na.rm = TRUE),
-                          mean(details$pop_precision,   na.rm = TRUE),
-                          mean(details$rand_precision,  na.rm = TRUE)),
-        `Recall@K`    = c(mean(details$model_recall, na.rm = TRUE),
-                          mean(details$pop_recall,   na.rm = TRUE),
-                          mean(details$rand_recall,  na.rm = TRUE)),
-        `HitRate@K`   = c(mean(details$model_hit, na.rm = TRUE),
-                          mean(details$pop_hit,   na.rm = TRUE),
-                          mean(details$rand_hit,  na.rm = TRUE)),
-        `MAP@K`       = c(mean(details$model_map, na.rm = TRUE),
-                          mean(details$pop_map,   na.rm = TRUE),
-                          mean(details$rand_map,  na.rm = TRUE)),
-        `nDCG@K`      = c(mean(details$model_ndcg, na.rm = TRUE),
-                          mean(details$pop_ndcg,   na.rm = TRUE),
-                          mean(details$rand_ndcg,  na.rm = TRUE))
+      
+      # важливо: якщо після фільтрації рекомендацій стало менше ніж top_n — це нормально.
+      # але ти можеш не хотіти "порожніх" клієнтів, тоді:
+      rec_list_all <- lapply(rec_list_all, function(x) head(x, top_n))
+      
+      
+      rec_long_all <- purrr::map2_df(
+        .x = rec_list_all,
+        .y = all_ids,
+        ~ tibble::tibble(client_id = .y, category = .x, rank = seq_along(.x))
       ) %>%
-        dplyr::mutate(
-          `Precision@K` = round(`Precision@K`, 4),
-          `Recall@K`    = round(`Recall@K`, 4),
-          `HitRate@K`   = round(`HitRate@K`, 4),
-          `MAP@K`       = round(`MAP@K`, 4),
-          `nDCG@K`      = round(`nDCG@K`, 4)
-        )
+        mutate(rank_score = top_n - rank + 1)
       
-      # Збережемо в rv (на всяк випадок)
-      rv$quality_summary <- summary_tbl
-      rv$quality_details <- details
+      n_all_clients <- rec_long_all %>% dplyr::summarise(n = dplyr::n_distinct(client_id)) %>% dplyr::pull(n)
       
-      # Вивід тільки в консоль / логи
-      message("=== RECSYS QUALITY (Holdout on TEST) ===")
-      message("K = ", top_n, ", holdout keep_frac = 0.7")
-      print(summary_tbl)
-      message("---- details (first 20 rows) ----")
-      print(head(details, 20))
-      message("=== END RECSYS QUALITY ===")
+      top_categories_all <- rec_long_all %>%
+        dplyr::filter(!is.na(category), category != "", category != "OTHER") %>%
+        dplyr::group_by(category) %>%
+        dplyr::summarise(
+          `Індекс попиту` = sum(rank_score, na.rm = TRUE),
+          `К-сть клієнтів, кому рекомендовано` = dplyr::n_distinct(client_id),
+          `Середня сила рекомендації` = round(mean(rank_score, na.rm = TRUE), 2),
+          .groups = "drop"
+        ) %>%
+        dplyr::mutate(`Охоплення, % клієнтів` = round(100 * `К-сть клієнтів, кому рекомендовано` / n_all_clients, 1)) %>%
+        dplyr::arrange(dplyr::desc(`Індекс попиту`), dplyr::desc(`К-сть клієнтів, кому рекомендовано`)) %>%
+        dplyr::slice_head(n = 20)
       
-    } else {
-      rv$quality_summary <- tibble::tibble(
-        Message = "Not enough test users with >=2 purchases for holdout evaluation."
-      )
-      rv$quality_details <- NULL
+      rv$top_categories_all <- top_categories_all
       
-      message("=== RECSYS QUALITY ===")
-      message("Not enough test users with >=2 purchases for holdout evaluation.")
-      message("=== END RECSYS QUALITY ===")
-    }
-    
-    
-    # ---- ТОП категорій по TEST (зрозумілий рейтинг для клієнта) ----
-    n_test_clients <- rec_long %>% dplyr::summarise(n = dplyr::n_distinct(client_id)) %>% dplyr::pull(n)
-    
-    top_categories_test <- rec_long %>%
-      dplyr::filter(!is.na(category), category != "", category != "OTHER") %>%
-      dplyr::group_by(category) %>%
-      dplyr::summarise(
-        `Попит за рекомендаціями (індекс)` = sum(rank_score, na.rm = TRUE),
-        `К-сть клієнтів, кому рекомендовано` = dplyr::n_distinct(client_id),
-        `Середня сила рекомендації (1–N)` = round(mean(rank_score, na.rm = TRUE), 2),
-        .groups = "drop"
-      ) %>%
-      dplyr::mutate(`Охоплення, % клієнтів` = round(100 * `К-сть клієнтів, кому рекомендовано` / n_test_clients, 1)) %>%
-      dplyr::arrange(dplyr::desc(`Попит за рекомендаціями (індекс)`), dplyr::desc(`К-сть клієнтів, кому рекомендовано`)) %>%
-      dplyr::slice_head(n = 20)
-    
-    rv$top_categories_test <- top_categories_test
-    
-    
-    
-    
-    
-    # ---- 6B. Рекомендації по ВСІХ ----
-    # Використовуємо фінальну модель на повних даних
-    # ---- 6B. Рекомендації по ВСІХ ----
-    pred_all <- predict(rec_final, newdata = bin_mat, n = top_n, type = "topNList")
-    rec_list_all <- as(pred_all, "list")
-    all_ids <- rownames(bin_mat)
-    
-    # матриця покупок для визначення bought_items по кожному клієнту
-    bin_m <- as(bin_mat, "matrix")
-    
-    rec_list_all <- purrr::map2(
-      .x = rec_list_all,
-      .y = all_ids,
-      ~{
-        uid <- .y
-        bought_items <- colnames(bin_m)[bin_m[uid, ] > 0]
-        
-        out <- apply_rules(
-          recs = .x,
-          bought_items = bought_items,
-          never_recommend = never_recommend,
-          tobacco_cat = tobacco_cat,
-          alcohol_cats = alcohol_cats,
-          kids_cat = kids_cat,
-          kids_signal = kids_signal,
-          policy = policy
-        )
-        
-        head(out, top_n)
-      }
-    )
-    
-    
-    # важливо: якщо після фільтрації рекомендацій стало менше ніж top_n — це нормально.
-    # але ти можеш не хотіти "порожніх" клієнтів, тоді:
-    rec_list_all <- lapply(rec_list_all, function(x) head(x, top_n))
-    
-    
-    rec_long_all <- purrr::map2_df(
-      .x = rec_list_all,
-      .y = all_ids,
-      ~ tibble::tibble(client_id = .y, category = .x, rank = seq_along(.x))
-    ) %>%
-      mutate(rank_score = top_n - rank + 1)
-    
-    n_all_clients <- rec_long_all %>% dplyr::summarise(n = dplyr::n_distinct(client_id)) %>% dplyr::pull(n)
-    
-    top_categories_all <- rec_long_all %>%
-      dplyr::filter(!is.na(category), category != "", category != "OTHER") %>%
-      dplyr::group_by(category) %>%
-      dplyr::summarise(
-        `Індекс попиту` = sum(rank_score, na.rm = TRUE),
-        `К-сть клієнтів, кому рекомендовано` = dplyr::n_distinct(client_id),
-        `Середня сила рекомендації` = round(mean(rank_score, na.rm = TRUE), 2),
-        .groups = "drop"
-      ) %>%
-      dplyr::mutate(`Охоплення, % клієнтів` = round(100 * `К-сть клієнтів, кому рекомендовано` / n_all_clients, 1)) %>%
-      dplyr::arrange(dplyr::desc(`Індекс попиту`), dplyr::desc(`К-сть клієнтів, кому рекомендовано`)) %>%
-      dplyr::slice_head(n = 20)
-    
-    rv$top_categories_all <- top_categories_all
-    
-    # ---- rank_matrix ----
-    rank_matrix_export <- rec_long_all %>% 
-      select(client_id, category, rank_score) %>%
-      pivot_wider(names_from = category, values_from = rank_score, values_fill = 0) %>%
-      as.data.frame()
-    
-    # ---- purchase_export (всі клієнти у матриці) ----
-    purchase_export <- purchase_matrix %>% as.data.frame() %>% tibble::rownames_to_column("client_id")
-    
-    # ---- rec_list_export ----
-    rec_list_export <- rec_long_all %>% arrange(client_id, rank) %>% select(client_id, category, rank_score)
-    # ---- combined_export (тільки клієнти з рекомендаціями) ----
-    # !!! НЕ ЧІПАЮ ЛОГІКУ - як у тебе
-    recommended_ids <- unique(rec_long_all$client_id)
-    
-    purchase_matrix_recs <- purchase_matrix[rownames(purchase_matrix) %in% recommended_ids, , drop = FALSE]
-    purchase_export_recs <- purchase_matrix_recs %>%
-      as.data.frame() %>%
-      tibble::rownames_to_column("client_id") %>%
-      mutate(client_id = as.character(client_id)) %>%
-      rename_with(~ paste0("buy_", .x), -client_id)
-    
-    rank_export_recs <- rank_matrix_export %>%
-      mutate(client_id = as.character(client_id)) %>%
-      filter(client_id %in% recommended_ids) %>%
-      rename_with(~ paste0("rec_", .x), -client_id)
-    
-    combined_export <- purchase_export_recs %>% left_join(rank_export_recs, by = "client_id")
-    
-    # ---- Зберігаємо ----
-    rv$rank_matrix_export <- rank_matrix_export
-    rv$purchase_dim <- dim(purchase_matrix)
-    rv$purchase_export <- purchase_export
-    rv$rec_list_export <- rec_list_export
-    rv$combined_export <- combined_export
-    
-    # >>> NEW: client dropdown options
-    rv$client_options <- sort(unique(combined_export$client_id))
-    
-    showNotification("Розрахунок завершено ✅", type = "message")
-    
-    incProgress(1, detail = "Завершення")
+      # ---- rank_matrix ----
+      rank_matrix_export <- rec_long_all %>% 
+        select(client_id, category, rank_score) %>%
+        pivot_wider(names_from = category, values_from = rank_score, values_fill = 0) %>%
+        as.data.frame()
+      
+      # ---- purchase_export (всі клієнти у матриці) ----
+      purchase_export <- purchase_matrix %>% as.data.frame() %>% tibble::rownames_to_column("client_id")
+      
+      # ---- rec_list_export ----
+      rec_list_export <- rec_long_all %>% arrange(client_id, rank) %>% select(client_id, category, rank_score)
+      # ---- combined_export (тільки клієнти з рекомендаціями) ----
+      # !!! НЕ ЧІПАЮ ЛОГІКУ - як у тебе
+      recommended_ids <- unique(rec_long_all$client_id)
+      
+      purchase_matrix_recs <- purchase_matrix[rownames(purchase_matrix) %in% recommended_ids, , drop = FALSE]
+      purchase_export_recs <- purchase_matrix_recs %>%
+        as.data.frame() %>%
+        tibble::rownames_to_column("client_id") %>%
+        mutate(client_id = as.character(client_id)) %>%
+        rename_with(~ paste0("buy_", .x), -client_id)
+      
+      rank_export_recs <- rank_matrix_export %>%
+        mutate(client_id = as.character(client_id)) %>%
+        filter(client_id %in% recommended_ids) %>%
+        rename_with(~ paste0("rec_", .x), -client_id)
+      
+      combined_export <- purchase_export_recs %>% left_join(rank_export_recs, by = "client_id")
+      
+      # ---- Зберігаємо ----
+      rv$rank_matrix_export <- rank_matrix_export
+      rv$purchase_dim <- dim(purchase_matrix)
+      rv$purchase_export <- purchase_export
+      rv$rec_list_export <- rec_list_export
+      rv$combined_export <- combined_export
+      
+      # >>> NEW: client dropdown options
+      rv$client_options <- sort(unique(combined_export$client_id))
+      
+      
+      
+      
+      showNotification("Розрахунок завершено ✅", type = "message")
+      
+      incProgress(1, detail = "Завершення")
     })
     
     
     
     shinyjs::hide("calc_status")
     enable("run")
-  
+    
   })
   
   # ---- OUTPUTS ----
@@ -1032,17 +1187,24 @@ server <- function(input, output, session) {
       "Клієнтів з рекомендаціями (test)" = length(unique(rv$rank_matrix_export$client_id)),
       "Розмір рангової матриці (рядки × стовпці)" = dim(rv$rank_matrix_export),
       "Розмір combined (рядки × стовпці)" = dim(rv$combined_export)
+      #"Порожніх категорій у вхідному файлі (рядків)" = rv$bad_rows %||% 0,
+      #"Клієнтів з порожніми категоріями" = rv$bad_clients %||% 0
+      
     )
   })
   
   # >>> NEW: KPI cards output
   output$kpi_cards <- renderUI({
-    req(rv$purchase_dim, rv$combined_export, rv$top_categories_test)
+    req(rv$purchase_dim, rv$combined_export, rv$top_categories_all)
+    
     
     n_clients <- rv$purchase_dim[1]
     n_cats <- rv$purchase_dim[2]
     n_recommended <- nrow(rv$combined_export)
     coverage <- round(100 * n_recommended / n_clients, 1)
+    bad_rows <- rv$bad_rows %||% 0
+    bad_clients <- rv$bad_clients %||% 0
+    
     
     # середня кількість рекомендацій (по rec_* з >0)
     rec_cols <- grep("^rec_", names(rv$combined_export), value = TRUE)
@@ -1050,6 +1212,8 @@ server <- function(input, output, session) {
       mean(rowSums(rv$combined_export[, rec_cols, drop = FALSE] > 0))
     } else 0
     avg_recs <- round(avg_recs, 2)
+    avg_breadth <- if (!is.null(rv$client_profile)) round(mean(rv$client_profile$breadth), 2) else NA
+    
     
     div(class = "kpi-row",
         div(class = "kpi-card",
@@ -1070,7 +1234,15 @@ server <- function(input, output, session) {
             div(class="kpi-title", "ТОП-1 категорія"),
             div(class="kpi-value", rv$top_categories_all$category[1] %||% "-"),
             div(class="kpi-sub", "за індексом попиту")
+        ),
+        div(class="kpi-card",
+            div(class="kpi-title","Середня кількість категорій на клієнта"),
+            div(class="kpi-value", avg_breadth),
+            div(class="kpi-sub","широта портфеля категорій")
         )
+        
+        
+        
     )
   })
   
@@ -1100,6 +1272,192 @@ server <- function(input, output, session) {
     ) %>% filter(score > 0) %>% arrange(desc(score)) %>% transmute(type, category)
     
     bind_rows(bought, recs)
+  })
+  
+  output$kpi_profile_cards <- renderUI({
+    req(rv$client_profile, rv$penetration_tbl)
+    
+    cp <- rv$client_profile
+    
+    avg_breadth <- round(mean(cp$breadth, na.rm = TRUE), 2)
+    share_mono <- rv$share_mono_all %||% NA
+    
+    share_narrow <- round(100 * mean(cp$breadth >= 2 & cp$breadth <= 4, na.rm = TRUE), 1)
+    share_medium <- round(100 * mean(cp$breadth >= 5 & cp$breadth <= 9, na.rm = TRUE), 1)
+    share_broad <- round(100 * mean(cp$breadth >= 10, na.rm = TRUE), 1)
+    
+    div_avg <- round(mean(cp$div_index, na.rm = TRUE), 3)
+    
+    div(class="kpi-row",
+        div(class="kpi-card",
+            div(class="kpi-title","Середня кількість категорій на клієнта"),
+            div(class="kpi-value", avg_breadth),
+            div(class="kpi-sub","Глибина покупок")
+        ),
+        #div(class="kpi-card",
+        #div(class="kpi-title","Mono-клієнти"),
+        #div(class="kpi-value", paste0(share_mono, "%")),
+        #div(class="kpi-sub","Клієнти з 1 категорією")
+        #),
+        div(class="kpi-card",
+            div(class="kpi-title","Клієнти з 2-4 категоріями"),
+            div(class="kpi-value", paste0(share_narrow, "%"))
+        ),
+        div(class="kpi-card",
+            div(class="kpi-title","Клієнти з 5-9 категоріями"),
+            div(class="kpi-value", paste0(share_medium, "%"))
+        ),
+        div(class="kpi-card",
+            div(class="kpi-title","Клієнти з 10+ категоріями"),
+            div(class="kpi-value", paste0(share_broad, "%")),
+            div(class="kpi-sub","Клієнти з широким кошиком")
+        ),
+        div(class="kpi-card",
+            div(class="kpi-title","Індекс диверсифікації покупок"),
+            div(class="kpi-value", div_avg),
+            div(class="kpi-sub","Середня частка категорій у кошику клієнта")
+        )
+    )
+  })
+  
+  output$breadth_hist <- renderPlot({
+    req(rv$client_profile)
+    
+    breadth_vals <- rv$client_profile$breadth
+    
+    freq_tbl <- table(breadth_vals)
+    
+    op <- par(no.readonly = TRUE)
+    on.exit(par(op))
+    
+    par(mar = c(5, 5, 4, 2))  # красиві відступи
+    
+    barplot(
+      freq_tbl,
+      col = "#D68FD6",
+      border = "#1B065E",
+      xlab = "Кількість категорій",
+      ylab = "Кількість клієнтів"
+    )
+  })
+  
+  
+  output$client_profile_table <- renderDT({
+    req(rv$client_profile)
+    
+    cp_ui <- rv$client_profile %>%
+      dplyr::rename(
+        `ID клієнта` = client_id,
+        `К-сть категорій` = breadth,
+        `Група за кількістю категорій` = breadth_group,
+        `Індекс диверсифікації` = div_index
+      )
+    
+    DT::datatable(cp_ui, rownames = FALSE, options = list(
+      pageLength = 25, scrollX = TRUE
+    ))
+  })
+  
+  
+  output$pen_bar <- renderPlot({
+    req(rv$penetration_tbl)
+    top <- head(rv$penetration_tbl, 20)
+    
+    # збільшуємо нижній відступ під підписи
+    op <- par(no.readonly = TRUE)
+    on.exit(par(op), add = TRUE)
+    par(mar = c(11, 5, 3, 1))  # bottom, left, top, right
+    
+    bp <- barplot(
+      top$`Охоплення клієнтів, %`,
+      names.arg = rep("", nrow(top)),  # прибираємо стандартні підписи
+      main = "ТОП-20 за рівнем проникнення",
+      ylab = "% клієнтів"
+    )
+    
+    # власні підписи під кутом 45°
+    text(
+      x = bp,
+      y = par("usr")[3] - 0.5,  # трохи нижче осі
+      labels = top$Категорія,
+      srt = 45,
+      adj = 1,
+      xpd = TRUE,
+      cex = 0.85
+    )
+  })
+  
+  output$breadth_groups_bar <- renderPlot({
+    req(rv$client_profile)
+    
+    cp <- rv$client_profile
+    
+    validate(
+      need(nrow(cp) > 0, "Немає даних профілю клієнтів (таблиця порожня).")
+    )
+    
+    # 1) Безпечне витягування широти (breadth)
+    if ("К-сть категорій" %in% names(cp)) {
+      b <- cp[["К-сть категорій"]]
+    } else if ("breadth" %in% names(cp)) {
+      b <- cp[["breadth"]]
+    } else {
+      validate(need(FALSE, paste0(
+        "Не знайдено колонку широти. Є колонки: ",
+        paste(names(cp), collapse = ", ")
+      )))
+    }
+    
+    # 2) Привести до numeric (бо часто це стає character після data.frame/Excel)
+    b <- suppressWarnings(as.numeric(b))
+    
+    validate(
+      need(!all(is.na(b)), "Широта кошика (К-сть категорій) не є числовою або вся NA.")
+    )
+    
+    # 3) Групи
+    groups <- cut(
+      b,
+      breaks = c(1, 4, 9, Inf),
+      labels = c("2–4", "5–9", "10+"),
+      right = TRUE
+    )
+    
+    cnt <- table(groups, useNA = "no")
+    pct <- round(100 * prop.table(cnt), 1)
+    
+    validate(
+      need(length(pct) > 0, "Після групування немає значень для побудови графіка."),
+      need(is.finite(max(pct, na.rm = TRUE)), "Неможливо порахувати межі осі Y (pct містить NA/NaN).")
+    )
+    
+    max_y <- max(pct, na.rm = TRUE)
+    
+    # 4) Малюємо
+    op <- par(no.readonly = TRUE)
+    on.exit(par(op), add = TRUE)
+    par(mar = c(6, 5, 3, 1))
+    
+    bp <- barplot(
+      pct,
+      ylim = c(0, max_y * 1.2),
+      main = "Розподіл клієнтів за широтою кошика",
+      ylab = "Частка клієнтів, %",
+      las = 1
+    )
+    
+    text(bp, pct, labels = paste0(pct, "%"), pos = 3, cex = 0.9)
+  })
+  
+  
+  
+  
+  
+  output$penetration_table <- renderDT({
+    req(rv$penetration_tbl)
+    DT::datatable(rv$penetration_tbl, rownames = FALSE, options = list(
+      pageLength = 25, scrollX = TRUE
+    ))
   })
   
   # ---- DOWNLOADS ----
@@ -1207,6 +1565,50 @@ server <- function(input, output, session) {
     
     dt
   })
+  
+  output$download_profiles <- downloadHandler(
+    filename = function() {
+      base <- if (!is.null(input$file$name)) tools::file_path_sans_ext(input$file$name) else "demo"
+      paste0("clients_profile_", base, ".xlsx")
+    },
+    content = function(file) {
+      req(rv$client_profile)
+      cp_ui <- rv$client_profile %>%
+        dplyr::rename(
+          `ID клієнта` = client_id,
+          `К-сть категорій` = breadth,
+          `Група за кількістю категорій` = breadth_group,
+          `Індекс диверсифікації` = div_index
+        )
+      
+      openxlsx::write.xlsx(cp_ui, file)
+      
+    }
+  )
+  
+  output$download_penetration <- downloadHandler(
+    filename = function() {
+      base <- if (!is.null(input$file$name)) tools::file_path_sans_ext(input$file$name) else "demo"
+      paste0("category_penetration_", base, ".xlsx")
+    },
+    content = function(file) {
+      req(rv$penetration_tbl)
+      openxlsx::write.xlsx(rv$penetration_tbl, file)
+    }
+  )
+  
+  output$download_mono <- downloadHandler(
+    filename = function() {
+      base <- if (!is.null(input$file$name)) tools::file_path_sans_ext(input$file$name) else "demo"
+      paste0("mono_clients_", base, ".xlsx")
+    },
+    content = function(file) {
+      req(rv$mono_clients)
+      openxlsx::write.xlsx(rv$mono_clients, file)
+    }
+  )
+  
+  
   
   
   
